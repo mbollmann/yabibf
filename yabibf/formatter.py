@@ -1,10 +1,14 @@
 import citeproc.formatter
-from citeproc import Citation, CitationItem, CitationStylesStyle, CitationStylesBibliography
+from citeproc import (
+    Citation,
+    CitationItem,
+    CitationStylesStyle,
+    CitationStylesBibliography,
+)
 from citeproc_styles import get_style_filepath
 
 
-class CiteprocFormatter():
-
+class CiteprocFormatter:
     def __init__(self, style, bibliography):
         """
         A class for formatting bibliographies with citeproc-py.
@@ -18,7 +22,9 @@ class CiteprocFormatter():
         self.style_path = get_style_filepath(style)
         self.style = CitationStylesStyle(self.style_path, validate=False)
         self.bib = bibliography
-        self.cs_bib = CitationStylesBibliography(self.style, bibliography, citeproc.formatter.html)
+        self.cs_bib = CitationStylesBibliography(
+            self.style, bibliography, citeproc.formatter.html
+        )
 
     def render(self, item):
         if isinstance(item, str):

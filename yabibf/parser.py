@@ -21,17 +21,19 @@ class BibTeX(CiteprocBibTeX):
         # and parses a BibTeX file with citeproc-py's functions, which is
         # precisely what we're trying to avoid
         self.bibliography = None
-        self.drop_fields = ['ENTRYTYPE', 'ID', 'eprint']
+        self.drop_fields = ["ENTRYTYPE", "ID", "eprint"]
         if drop_fields is not None:
             self.drop_fields += drop_fields
         self.library = None
         self.preamble_macros = {}
-        self.fields.update({
-            "url": "URL",
-            "institution": "publisher",
-            "school": "publisher",
-            "type": "note",
-        })
+        self.fields.update(
+            {
+                "url": "URL",
+                "institution": "publisher",
+                "school": "publisher",
+                "type": "note",
+            }
+        )
         if bibfiles is not None:
             self.parse_bibfiles(bibfiles)
 
@@ -42,7 +44,7 @@ class BibTeX(CiteprocBibTeX):
     def parse_bibfiles(self, bibfiles: list[str]) -> None:
         bibdata = []
         for filename in bibfiles:
-            with open(filename, 'r') as f:
+            with open(filename, "r") as f:
                 bibdata.append(f.read())
         self.library = bibtexparser.parse_string(
             "\n".join(bibdata),
@@ -64,7 +66,7 @@ class BibTeX(CiteprocBibTeX):
         csl_fields = self._bibtex_to_csl(entry)
         csl_date = self._bibtex_to_csl_date(entry)
         if csl_date:
-            csl_fields['issued'] = csl_date
+            csl_fields["issued"] = csl_date
         return citeproc.source.Reference(entry.key, csl_type, **csl_fields)
 
     def _bibtex_to_csl(self, entry):
@@ -75,12 +77,12 @@ class BibTeX(CiteprocBibTeX):
             try:
                 csl_field = self.fields[field]
             except KeyError:
-                if field not in ('year', 'month', 'filename'):
+                if field not in ("year", "month", "filename"):
                     log.warning("Unsupported BibTeX field '{}'".format(field))
                 continue
-            if field == 'pages':
+            if field == "pages":
                 value = self._bibtex_to_csl_pages(value)
-            elif field in ('author', 'editor'):
+            elif field in ("author", "editor"):
                 value = self._parse_author(value)
             else:
                 value = str(value)
@@ -88,27 +90,30 @@ class BibTeX(CiteprocBibTeX):
         return csl_dict
 
     def _bibtex_to_csl_date(self, entry):
-        if 'month' in entry.fields_dict and 'month' not in self.drop_fields:
+        if "month" in entry.fields_dict and "month" not in self.drop_fields:
             # already int's via mw.MonthIntMiddleware()
-            begin_dict, end_dict = {'month': entry['month']}, {'month': entry['month']}
+            begin_dict, end_dict = {"month": entry["month"]}, {"month": entry["month"]}
         else:
             begin_dict, end_dict = {}, {}
-        if 'year' in entry.fields_dict:
-            begin_dict['year'], end_dict['year'] = self._parse_year(entry['year'])
+        if "year" in entry.fields_dict:
+            begin_dict["year"], end_dict["year"] = self._parse_year(entry["year"])
         if not begin_dict:
             return None
         if begin_dict == end_dict:
             return citeproc.source.Date(**begin_dict)
         else:
-            return citeproc.source.DateRange(begin=Date(**begin_dict), end=Date(**end_dict))
+            return citeproc.source.DateRange(
+                begin=citeproc.source.Date(**begin_dict),
+                end=citeproc.source.Date(**end_dict),
+            )
 
     def _parse_year(self, year):
         year_str = str(year)
         if "–" in year_str:
-            begin_year, end_year = year_str.split(EN_DASH)
+            begin_year, end_year = year_str.split("–")
             begin_len, end_len = len(begin_year), len(end_year)
             if end_len < begin_len:
-                end_year = begin_year[:begin_len - end_len] + end_year
+                end_year = begin_year[: begin_len - end_len] + end_year
         else:
             begin_year = end_year = int(year_str)
         return begin_year, end_year
@@ -118,11 +123,11 @@ class BibTeX(CiteprocBibTeX):
         for author in authors:
             csl_parts = {}
             for part, csl_label in (
-                    ("first", "given"),
-                    ("von", "non-dropping-particle"),
-                    ("last", "family"),
-                    ("jr", "suffix")
-                ):
+                ("first", "given"),
+                ("von", "non-dropping-particle"),
+                ("last", "family"),
+                ("jr", "suffix"),
+            ):
                 value = " ".join(getattr(author, part))
                 if value.strip():
                     csl_parts[csl_label] = value

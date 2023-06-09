@@ -16,10 +16,14 @@ class BibTeX(CiteprocBibTeX):
     functionality for converting entries to CSL fields.
     """
 
-    def __init__(self):
+    def __init__(self, bibfiles=None, drop_fields=None):
         # We're not calling super().__init__() because that automatically loads
         # and parses a BibTeX file with citeproc-py's functions, which is
         # precisely what we're trying to avoid
+        self.bibliography = None
+        self.drop_fields = ['ENTRYTYPE', 'ID', 'eprint']
+        if drop_fields is not None:
+            self.drop_fields += drop_fields
         self.library = None
         self.preamble_macros = {}
         self.fields.update({
@@ -28,6 +32,12 @@ class BibTeX(CiteprocBibTeX):
             "school": "publisher",
             "type": "note",
         })
+        if bibfiles is not None:
+            self.parse_bibfiles(bibfiles)
+
+    @property
+    def entries(self):
+        return self.library.entries
 
     def parse_bibfiles(self, bibfiles: list[str]) -> None:
         bibdata = []
@@ -60,7 +70,7 @@ class BibTeX(CiteprocBibTeX):
     def _bibtex_to_csl(self, entry):
         csl_dict = {}
         for field, value in entry.items():
-            if field in ('ENTRYTYPE', 'ID', 'eprint'):
+            if field in self.drop_fields:
                 continue
             try:
                 csl_field = self.fields[field]
@@ -78,7 +88,7 @@ class BibTeX(CiteprocBibTeX):
         return csl_dict
 
     def _bibtex_to_csl_date(self, entry):
-        if 'month' in entry.fields_dict:
+        if 'month' in entry.fields_dict and 'month' not in self.drop_fields:
             # already int's via mw.MonthIntMiddleware()
             begin_dict, end_dict = {'month': entry['month']}, {'month': entry['month']}
         else:

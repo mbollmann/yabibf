@@ -8,7 +8,7 @@ cf = CiteprocFormatter(style, bib)
 
 
 def test_all_entries_parsed():
-    assert len(bib.entries) == 4
+    assert len(bib.entries) == 5
 
 
 def test_format_article_one_author():

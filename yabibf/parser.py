@@ -2,9 +2,12 @@
 
 import bibtexparser
 from bibtexparser import middlewares as mw
+from bibtexparser.model import Entry
 import citeproc.source
 from citeproc.source.bibtex import BibTeX as CiteprocBibTeX
 import logging
+from typing import Optional
+
 
 log = logging.getLogger("bibtex")
 
@@ -16,7 +19,11 @@ class BibTeX(CiteprocBibTeX):
     functionality for converting entries to CSL fields.
     """
 
-    def __init__(self, bibfiles=None, drop_fields=None):
+    def __init__(
+        self,
+        bibfiles: Optional[list[str]] = None,
+        drop_fields: Optional[list[str]] = None,
+    ) -> None:
         # We're not calling super().__init__() because that automatically loads
         # and parses a BibTeX file with citeproc-py's functions, which is
         # precisely what we're trying to avoid
@@ -38,8 +45,11 @@ class BibTeX(CiteprocBibTeX):
             self.parse_bibfiles(bibfiles)
 
     @property
-    def entries(self):
+    def entries(self) -> list[Entry]:
         return self.library.entries
+
+    def get_as_entry(self, key: str) -> Entry:
+        return self.library.entries_dict.get(key)
 
     def parse_bibfiles(self, bibfiles: list[str]) -> None:
         bibdata = []
@@ -61,7 +71,7 @@ class BibTeX(CiteprocBibTeX):
         for entry in self.library.entries:
             self.add(self.create_reference(entry))
 
-    def create_reference(self, entry):
+    def create_reference(self, entry: Entry) -> citeproc.source.Reference:
         csl_type = self.types[entry.entry_type]
         csl_fields = self._bibtex_to_csl(entry)
         csl_date = self._bibtex_to_csl_date(entry)

@@ -8,6 +8,7 @@ from citeproc import (
     CitationStylesBibliography,
 )
 from citeproc_styles import get_style_filepath
+from unicodedata import normalize
 
 from .decorator import BaseDecorator
 
@@ -57,7 +58,7 @@ class CiteprocFormatter:
         # that cited paper, then take its first (and only) entry.
         self.cs_bib.register(Citation([item]))
         strings = self.cs_bib.style.render_bibliography([item])[0]
-        text = str(strings)
+        text = normalize("NFKC", str(strings))
         return self._decorate(item, text)
 
     def _decorate(self, item: CitationItem, text: str) -> str:

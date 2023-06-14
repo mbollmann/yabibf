@@ -2,6 +2,7 @@ from bibtexparser.model import Entry
 from urllib.parse import urlparse
 import logging
 from typing import Optional
+from unicodedata import normalize
 
 
 log = logging.getLogger("bibtex")
@@ -65,7 +66,7 @@ class NameDecorator(BaseDecorator):
     def __init__(
         self, names: list[str], css_class: str = "bibitem-highlight-name"
     ) -> None:
-        self.names = names
+        self.names = [normalize("NFKC", n) for n in names]
         self._css = css_class
 
     def __call__(self, entry, text):

@@ -28,7 +28,14 @@ class BibTeX(CiteprocBibTeX):
         # and parses a BibTeX file with citeproc-py's functions, which is
         # precisely what we're trying to avoid
         self.bibliography = None
-        self.drop_fields = ["ENTRYTYPE", "ID", "eprint"]
+        self.drop_fields = [
+            "ENTRYTYPE",
+            "ID",
+            "eprint",
+            "archivePrefix",
+            "primaryClass",
+            "URN",
+        ]
         if drop_fields is not None:
             self.drop_fields += drop_fields
         self.library = None

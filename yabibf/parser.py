@@ -89,6 +89,10 @@ class BibTeX(CiteprocBibTeX):
     def _bibtex_to_csl(self, entry):
         csl_dict = {}
         for field, value in entry.items():
+            if field == "archivePrefix" and "eprint" in entry.fields_dict:
+                # pre-print server gets attached to note field
+                field = "note"
+                value = f"{value}:{entry['eprint']}"
             if field in self.drop_fields:
                 continue
             try:
@@ -101,6 +105,8 @@ class BibTeX(CiteprocBibTeX):
                 value = self._bibtex_to_csl_pages(value)
             elif field in ("author", "editor"):
                 value = self._parse_author(value)
+            elif field == "note" and csl_field in csl_dict:
+                value = f"{csl_dict[csl_field]}. {str(value)}"
             else:
                 value = str(value)
             csl_dict[csl_field] = value

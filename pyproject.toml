@@ -9,7 +9,7 @@ target-version = 'py311'
 
 [tool.poetry]
 name = "yabibf"
-version = "0.1.0"
+version = "0.1.1"
 description = "Yet Another BIBliography Formatter"
 authors = ["Marcel Bollmann <marcel@bollmann.me>"]
 readme = "README.md"

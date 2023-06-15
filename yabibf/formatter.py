@@ -8,6 +8,7 @@ from citeproc import (
     CitationStylesBibliography,
 )
 from citeproc_styles import get_style_filepath
+from pathlib import Path
 from unicodedata import normalize
 
 from .decorator import BaseDecorator
@@ -21,12 +22,16 @@ class CiteprocFormatter:
         A class for formatting bibliographies with citeproc-py.
 
         Parameters:
-            style: The name of a CSL Style.  Corresponds to the name of a .csl file in the
+            style: The name of a CSL style, or path to a .csl file defining the style.
+                   If given as a name, must correspond to the name of a .csl file in the
                    citation-style-language/styles repository:
                    <https://github.com/citation-style-language/styles>
             bibliography: A citeproc-py BibliographySource object, e.g. a BibTeX instance.
         """
-        self.style_path = get_style_filepath(style)
+        if style.endswith(".csl") and Path(style).exists():
+            self.style_path = style
+        else:
+            self.style_path = get_style_filepath(style)
         self.style = CitationStylesStyle(self.style_path, validate=False)
         self.bib = bibliography
         self.cs_bib = CitationStylesBibliography(

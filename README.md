@@ -8,6 +8,7 @@ another programming language with better libraries, yet here we are.
 
 Use at your own risk.
 
+**NOTE: Currently doesn't support Python 3.12 because of [citeproc-py-styles](https://github.com/inveniosoftware/citeproc-py-styles), which relies on the removed `pkg_resources` module.**
 
 ## Installation
 

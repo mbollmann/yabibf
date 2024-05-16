@@ -15,7 +15,7 @@ authors = ["Marcel Bollmann <marcel@bollmann.me>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.8,<3.12"
 bibtexparser = {git = "https://github.com/sciunto-org/python-bibtexparser"}
 citeproc-py = "0.6.0"
 citeproc-py-styles = "^0.1.3"

@@ -8,7 +8,7 @@ another programming language with better libraries, yet here we are.
 
 Use at your own risk.
 
-**NOTE: Currently doesn't support Python 3.12 because of [citeproc-py-styles](https://github.com/inveniosoftware/citeproc-py-styles), which relies on the removed `pkg_resources` module.**
+**NOTE: With Python 3.12 or higher, you currently cannot use [citeproc-py-styles](https://github.com/inveniosoftware/citeproc-py-styles) to load citation styles, since it relies on the removed `pkg_resources` module.  Prove a path to a CSL file directly instead.**
 
 ## Installation
 

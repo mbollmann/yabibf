@@ -3,7 +3,7 @@ from yabibf import BibTeX, CiteprocFormatter
 
 # Setup
 bib = BibTeX(["tests/example.bib"], drop_fields=["month"])
-style = "association-for-computational-linguistics"
+style = "tests/association-for-computational-linguistics.csl"
 cf = CiteprocFormatter(style, bib)
 
 

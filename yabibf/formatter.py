@@ -17,7 +17,7 @@ from .decorator import BaseDecorator
 if sys.version_info >= (3, 12):
     # citeproc-py-styles not supported
     def get_style_filepath(*args):
-        raise RuntimeError("citeproc-py-styles not supported in Python 3.12")
+        raise RuntimeError("citeproc-py-styles not supported in Python 3.12 or later")
 
 else:
     from citeproc_styles import get_style_filepath
